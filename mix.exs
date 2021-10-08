@@ -14,7 +14,7 @@ defmodule SMTP.Mixfile do
 
   def package do
     [
-      files: ~w(src mix.exs LICENSE),
+      files: ~w(src lib mix.exs LICENSE),
       licenses: ["ISC"],
       maintainers: ["Namdak Tonpa"],
       name: :smtp,
@@ -33,7 +33,7 @@ defmodule SMTP.Mixfile do
     [
       {:ranch, "~> 1.8.0"},
       {:hut, "~> 1.3.0"},
-      {:ex_doc, "~> 0.20.2", only: :dev},
+      {:ex_doc, "~> 0.11", only: :dev}
     ]
   end
 end
