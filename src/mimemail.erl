@@ -806,11 +806,8 @@ encode_parameters([[]]) ->
 encode_parameters(Parameters) ->
 	[encode_parameter(Parameter) || Parameter <- Parameters].
 
-encode_parameter({X, Y}) ->
-	case escape_tspecial(Y, false, <<>>) of
-		{true, Special} -> [X, $=, $", Special, $"];
-		false -> [X, $=, Y]
-	end.
+encode_parameter({X, Y}) -> 
+	[X, $=, $", rfc2047_utf8_encode(Y), $"].
 
 % See also: http://www.ietf.org/rfc/rfc2045.txt section 5.1
 escape_tspecial(<<>>, false, _Acc) ->
@@ -818,7 +815,7 @@ escape_tspecial(<<>>, false, _Acc) ->
 escape_tspecial(<<>>, IsSpecial, Acc) ->
 	{IsSpecial, Acc};
 escape_tspecial(<<C, Rest/binary>>, _IsSpecial, Acc) when C =:= $" ->
-	escape_tspecial(Rest, true, <<Acc/binary, $\\, $">>);
+	escape_tspecial(Rest, true, <<Acc/binary>>);
 escape_tspecial(<<C, Rest/binary>>, _IsSpecial, Acc) when C =:= $\\ ->
 	escape_tspecial(Rest, true, <<Acc/binary, $\\, $\\>>);
 escape_tspecial(<<C, Rest/binary>>, _IsSpecial, Acc)
@@ -1014,7 +1011,7 @@ rfc2047_utf8_encode(Text) ->
     end.
 
 rfc2047_utf8_encode(T, Acc, WordLen, Char) when WordLen + length(Char) > 73 ->
-    CloseLine = lists:reverse("?=\r\n "),
+    CloseLine = lists:reverse("?= "),
     NewLine = Char ++ lists:reverse("=?UTF-8?Q?"),
     %% Make sure that the individual encoded words are not longer than 76 chars (including charset etc)
     rfc2047_utf8_encode(T, NewLine ++ CloseLine ++ Acc, length(NewLine), []);

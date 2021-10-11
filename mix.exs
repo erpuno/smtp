@@ -4,7 +4,7 @@ defmodule SMTP.Mixfile do
   def project() do
     [
       app: :smtp,
-      version: "1.1.1",
+      version: "1.1.2",
       elixir: "~> 1.9",
       description: "SMTP Client and Server",
       package: package(),
